@@ -12,17 +12,17 @@ pipeline {
               }
           }
       }
-      stage('Run Tests') {
-          steps {
-              script {
+        stage('Run Tests') {
+        steps {
+            script {
                 def testContainer = docker.image("${DOCKER_IMAGE}:latest").run("-d")
                 // Here you would run your tests against the running container.
                 // Replace 'your-test-command' with the actual command to run your tests.
-                def testResult = testContainer.exec(['sh', '-c', 'go test'])
+                def testResult = testContainer.exec(['sh', '-c', 'your-test-command'])
                 echo "${testResult}"
-              }
-          }
-      }
+            }
+        }
+        }
       stage('Tag Docker Image') {
           steps {
               script {
