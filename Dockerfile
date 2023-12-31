@@ -22,5 +22,4 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o ./app
 EXPOSE 8081
 
 # Run
-CMD ["./app"]
-
+CMD ["/app/app"]
