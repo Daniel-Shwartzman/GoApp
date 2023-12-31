@@ -15,12 +15,13 @@ pipeline {
         stage('Run Tests') {
         steps {
             script {
-                docker.image("${DOCKER_IMAGE}:latest").inside('-u root') {
+                docker.image("${DOCKER_IMAGE}:latest").inside('/c/programdata/jenkins/.jenkins/workspace/goapppipeline/') {
                     sh 'go test'
                 }
             }
         }
         }
+
             stage('Tag Docker Image') {
           steps {
               script {
