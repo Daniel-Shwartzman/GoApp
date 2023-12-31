@@ -15,13 +15,15 @@ pipeline {
     stage('Run Tests') {
     steps {
     script {
-        def dockerArgs = '-p 8081:8081 -v /c/programdata/jenkins/.jenkins/workspace/goapppipeline/:/app'
-        docker.image("${DOCKER_IMAGE}").run(dockerArgs) {
-            sh 'cd /app && go test'
-        }
+    def dockerArgs = '-p 8081:8081 -v /c/programdata/jenkins/.jenkins/workspace/goapppipeline/:/app'
+    def dockerCommand = 'cd /app && go test'
+    docker.image("${DOCKER_IMAGE}").withRun(dockerArgs) {
+        sh dockerCommand
     }
     }
     }
+    }
+
    stage('Tag Docker Image') {
        steps {
            script {
