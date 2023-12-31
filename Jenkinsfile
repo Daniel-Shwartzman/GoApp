@@ -12,15 +12,16 @@ pipeline {
            }
        }
    }
-   stage('Run Tests') {
-       steps {
-           script {
-              docker.image("${DOCKER_IMAGE}").inside('-p 8081:8081', '/c/programdata/jenkins/.jenkins/workspace/goapppipeline/') {
-                sh 'go test'
-              }
-           }
-       }
-   }
+    stage('Run Tests') {
+    steps {
+    script {
+        def dockerArgs = '-p 8081:8081 -v /c/programdata/jenkins/.jenkins/workspace/goapppipeline/:/app'
+        docker.image("${DOCKER_IMAGE}").run(dockerArgs) {
+            sh 'cd /app && go test'
+        }
+    }
+    }
+    }
    stage('Tag Docker Image') {
        steps {
            script {
