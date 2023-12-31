@@ -15,7 +15,7 @@ pipeline {
         stage('Run Tests') {
             steps {
             script {
-                docker.image("dshwartzman5/go-jenkins-dockerhub-repo:latest").inside('.') {
+                docker.image("dshwartzman5/go-jenkins-dockerhub-repo:latest").inside('-p 8081:8081') {
                     sh 'go test'
                 }
             }
