@@ -5,14 +5,15 @@ pipeline {
    DOCKERHUB_CREDENTIALS = 'docker-credentials' // Refer to the credentials added in Jenkins
  }
  stages {
-   stage('Pull Docker Image') {
-       steps {
-           script {
-             docker login -u dshwartzman5
-             docker.image("${DOCKER_IMAGE}").pull()
-           }
-       }
-   }
+    stage('Pull Docker Image') {
+      steps {
+          sh '''
+              echo $DOCKERHUB_CREDENTIALS | docker login --username dshwartzman5 --password-stdin
+              docker pull ${DOCKER_IMAGE}
+          '''
+      }
+    }
+
     stage('Run Tests') {
       steps {
           script {
