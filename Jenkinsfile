@@ -23,18 +23,26 @@ pipeline {
                 script {
                     // Run the container with the tests
                     bat 'docker run -p 8081:8081 --name test-container dshwartzman5/go-jenkins-dockerhub-repo:latest'
-                    // Get the test results
-                    bat 'docker exex -it test-container bash'
-                    sh 'cat test-results.txt'
+
+                    // Copy the test results from the container to the workspace
+                    bat 'docker cp test-container:/app/test-results.txt .'
+
+                    // Stop and remove the container
+                    bat 'docker stop test-container'
+                    bat 'docker rm test-container'
+
+                    // Read the test results
+                    def testResults = readFile('test-results.txt')
 
                     // Check if the tests passed
-                    def testResults = readFile('test-results.txt')
                     if (testResults.contains('FAIL')) {
                         error 'Tests failed'
                     }
                 }
             }
         }
+
+
 
 
 
