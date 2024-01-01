@@ -21,7 +21,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    def dockerArgs = '-p 8081:8081 -v C:\\Users\\Daniel Schwartzman\\Desktop\\myproject:/app'
+                    def dockerArgs = '-p 8081:8081 -v C:\\Users\\Daniel Schwartzman\\Desktop\\דני\\לימודים\\Projects\\GoApp:/app'
                     docker.image("${DOCKER_IMAGE}").withRun(dockerArgs) {
                         // Read the test_results.txt file
                         def testResults = readFile('/app/test_results.txt')
