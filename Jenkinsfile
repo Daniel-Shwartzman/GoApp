@@ -1,7 +1,6 @@
 pipeline {
     agent any
     environment {
-        DOCKER_IMAGE = 'dshwartzman5/go-jenkins-dockerhub-repo:latest'
         DOCKERHUB_CREDENTIALS = 'docker-credentials'
         DOCKER_ACCESS_TOKEN = credentials('docker-credentials')
         DOCKER_USERNAME = 'dshwartzman5'
@@ -13,7 +12,7 @@ pipeline {
                     echo "Logging into Docker Hub"
                     bat "docker login -u $DOCKER_USERNAME -p $DOCKER_ACCESS_TOKEN"
                     echo "Pulling Docker Image"
-                    bat "docker pull ${DOCKER_IMAGE}"
+                    bat "docker pull dshwartzman5/go-jenkins-dockerhub-repo:latest"
                 }
             }
         }
@@ -45,7 +44,7 @@ pipeline {
         stage('Tag Docker Image') {
             steps {
                 script {
-                    bat 'docker tag ${DOCKER_IMAGE} ${DOCKER_IMAGE}:${env.BUILD_ID}'
+                    bat 'docker tag dshwartzman5/go-jenkins-dockerhub-repo:latest'
                 }
             }
         }
@@ -53,7 +52,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    bat "docker push ${DOCKER_IMAGE}:${env.BUILD_ID}"
+                    bat "docker push dshwartzman5/go-jenkins-dockerhub-repo:latest"
                 }
             }
         }
