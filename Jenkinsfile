@@ -2,8 +2,8 @@ pipeline {
     agent any
     environment {
         DOCKER_IMAGE = 'dshwartzman5/go-jenkins-dockerhub-repo:latest'
-        DOCKERHUB_CREDENTIALS = 'docker-credentials' // Refer to the credentials added in Jenkins
-        DOCKER_ACCESS_TOKEN = credentials('docker-credentials') // Assuming your credential ID is 'docker-credentials'
+        DOCKERHUB_CREDENTIALS = 'docker-credentials'
+        DOCKER_ACCESS_TOKEN = credentials('docker-credentials')
         DOCKER_USERNAME = 'dshwartzman5'
     }
     stages {
@@ -21,14 +21,18 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    def dockerArgs = '-p 8081:8081 -v C:\\Users\\Daniel Schwartzman\\Desktop\\דני\\לימודים\\Projects\\GoApp:/app'
-                    docker.image("${DOCKER_IMAGE}").withRun(dockerArgs) {
-                        // Read the test_results.txt file
-                        def testResults = readFile('/app/test_results.txt')
-                        // Check if the tests passed
-                        if (testResults =~ /FAIL/) {
-                            error('Tests failed')
-                        }
+                    // Use the Docker image for testing
+                    def dockerImage = "${DOCKER_IMAGE}"
+
+                    // Run tests within the Docker container
+                    docker.image(dockerImage).inside {
+                        // Tests are already executed in the container
+                    }
+
+                    // Read the test results file and check if the tests passed
+                    def testResults = readFile('/app/test_results.txt')
+                    if (testResults =~ /FAIL/) {
+                        error('Tests failed')
                     }
                 }
             }
