@@ -11,9 +11,9 @@ pipeline {
             steps {
                 script {
                     echo "Logging into Docker Hub"
-                    sh "docker login -u $DOCKER_USERNAME -p $DOCKER_ACCESS_TOKEN"
+                    bat "docker login -u $DOCKER_USERNAME -p $DOCKER_ACCESS_TOKEN"
                     echo "Pulling Docker Image"
-                    sh "docker pull ${DOCKER_IMAGE}"
+                    bat "docker pull ${DOCKER_IMAGE}"
                 }
             }
         }
