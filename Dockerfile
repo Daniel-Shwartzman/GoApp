@@ -14,7 +14,7 @@ COPY *.go ./
 COPY index.html ./
 
 # Run the tests
-RUN go test -v ./...
+RUN go test -v ./... > test_results.txt
 
 # Build
 RUN CGO_ENABLED=0 GOOS=linux go build -o ./app
