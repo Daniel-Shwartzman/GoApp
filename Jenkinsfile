@@ -49,7 +49,7 @@ pipeline {
         stage('Tag Docker Image') {
             steps {
                 script {
-                    docker.image("${DOCKER_IMAGE}").tag("${DOCKER_IMAGE}:${env.BUILD_ID}")
+                    bat 'docker tag ${DOCKER_IMAGE} ${DOCKER_IMAGE}:${env.BUILD_ID}'
                 }
             }
         }
@@ -57,8 +57,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.hub.docker.com', "${DOCKERHUB_CREDENTIALS}") {
-                        docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
+                    bat "docker push ${DOCKER_IMAGE}:${env.BUILD_ID}"
                     }
                 }
             }
