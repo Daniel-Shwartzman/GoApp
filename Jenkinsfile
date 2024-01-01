@@ -8,6 +8,7 @@ pipeline {
    stage('Pull Docker Image') {
        steps {
            script {
+             docker login -u dshwartzman5
              docker.image("${DOCKER_IMAGE}").pull()
            }
        }
