@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     // Run the container with the tests
-                    bat 'docker run -p 8081:8081 --name test-container dshwartzman5/go-jenkins-dockerhub-repo:latest'
+                    bat 'docker run -d -p 8081:8081 --name test-container dshwartzman5/go-jenkins-dockerhub-repo:latest'
 
                     // Copy the test results from the container to the workspace
                     bat 'docker cp test-container:/app/test-results.txt .'
