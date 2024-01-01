@@ -13,16 +13,21 @@ pipeline {
        }
    }
     stage('Run Tests') {
-    steps {
-    script {
-    def dockerArgs = '-p 8081:8081 -v /c/programdata/jenkins/.jenkins/workspace/goapppipeline/:/app'
-    def dockerCommand = 'cd /app && go test'
-    docker.image("${DOCKER_IMAGE}").withRun(dockerArgs) {
-        sh dockerCommand
+      steps {
+          script {
+              def dockerArgs = '-p 8081:8081 -v /path/on/host:/app'
+              docker.image("${DOCKER_IMAGE}").withRun(dockerArgs) {
+                  // Read the test_results.txt file
+                  def testResults = readFile('/app/test_results.txt')
+                  // Check if the tests passed
+                  if (testResults =~ /FAIL/) {
+                    error('Tests failed')
+                  }
+              }
+          }
+      }
     }
-    }
-    }
-    }
+
 
    stage('Tag Docker Image') {
        steps {
