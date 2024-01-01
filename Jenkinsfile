@@ -5,14 +5,17 @@ pipeline {
         DOCKER_ACCESS_TOKEN = credentials('docker-credentials')
         DOCKER_USERNAME = 'dshwartzman5'
     }
+    triggers {
+        githubPush()
+    }
     stages {
-        stage('Pull Docker Image') {
+        stage('Pull and Build Docker Image') {
             steps {
                 script {
                     echo "Logging into Docker Hub"
                     bat "docker login -u $DOCKER_USERNAME -p $DOCKER_ACCESS_TOKEN"
-                    echo "Pulling Docker Image"
-                    bat "docker pull dshwartzman5/go-jenkins-dockerhub-repo:latest"
+                    echo "Building Docker Image"
+                    bat "docker build -t dshwartzman5/go-jenkins-dockerhub-repo:${env.BUILD_ID} ."
                 }
             }
         }
@@ -21,7 +24,7 @@ pipeline {
             steps {
                 script {
                     // Run the container with the tests
-                    bat 'docker run -d -p 8081:8081 --name test-container dshwartzman5/go-jenkins-dockerhub-repo:latest'
+                    bat 'docker run -d -p 8081:8081 --name test-container dshwartzman5/go-jenkins-dockerhub-repo:${env.BUILD_ID}'
 
                     // Copy the test results from the container to the workspace
                     bat 'docker cp test-container:/app/test_results.txt .'
@@ -41,18 +44,11 @@ pipeline {
             }
         }
 
-        stage('Tag Docker Image') {
-            steps {
-                script {
-                    bat 'docker tag dshwartzman5/go-jenkins-dockerhub-repo:latest dshwartzman5/go-jenkins-dockerhub-repo:latest'
-                }
-            }
-        }
-
         stage('Push Docker Image') {
             steps {
                 script {
-                    bat "docker push dshwartzman5/go-jenkins-dockerhub-repo:latest"
+                    bat "docker tag dshwartzman5/go-jenkins-dockerhub-repo:${env.BUILD_ID} dshwartzman5/go-jenkins-dockerhub-repo:${env.BUILD_ID}"
+                    bat "docker push dshwartzman5/go-jenkins-dockerhub-repo:${env.BUILD_ID}"
                 }
             }
         }
