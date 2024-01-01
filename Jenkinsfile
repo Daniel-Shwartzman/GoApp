@@ -21,28 +21,17 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    def dockerArgs = '-p 8081:8081 -v C:/Users/Daniel Schwartzman/Desktop/דני/לימודים/Projects/GoApp:/app'
-                    def dockerImage = docker.image("${DOCKER_IMAGE}")
-                    
-                    // Run the Docker container
-                    def container = dockerImage.run(dockerArgs)
-
-                    // Wait for the container to finish
-                    container.waitFor()
-
-                    // Copy the test results from the container to the workspace
-                    bat "docker cp ${container.id}:/app/test_results.txt ."
-
-                    // Read the test_results.txt file
-                    def testResults = readFile('test_results.txt')
+                    // Run the container with the tests
+                    bat 'docker run -p 8081:8081 -name test-container ${DOCKER_IMAGE}'
+                    // Get the test results
+                    bat 'docker exex -it test-container bash'
+                    sh 'cat test-results.txt'
 
                     // Check if the tests passed
-                    if (testResults =~ /FAIL/) {
-                        error('Tests failed')
+                    def testResults = readFile('test-results.txt')
+                    if (testResults.contains('FAIL')) {
+                        error 'Tests failed'
                     }
-
-                    // Cleanup: Remove the local test_results.txt file
-                    deleteFile('test_results.txt')
                 }
             }
         }
