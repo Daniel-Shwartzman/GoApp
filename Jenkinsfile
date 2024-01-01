@@ -3,12 +3,13 @@ pipeline {
  environment {
    DOCKER_IMAGE = 'dshwartzman5/go-jenkins-dockerhub-repo:latest'
    DOCKERHUB_CREDENTIALS = 'docker-credentials' // Refer to the credentials added in Jenkins
+    DOCKER_USERNAME = 'dshwartzman5'
  }
  stages {
     stage('Pull Docker Image') {
     steps {
         sh '''
-            "C:\\Program Files\\Git\\bin\\bash.exe" -c "echo \\$DOCKER_TOKEN | docker login --username \\$DOCKER_USERNAME --password-stdin && docker pull ${DOCKER_IMAGE}"
+            echo $DOCKERHUB_CREDENTIALS | docker login -u $DOCKER_USERNAME --password-stdin
         '''
     }
     }
