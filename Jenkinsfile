@@ -42,10 +42,6 @@ pipeline {
             }
         }
 
-
-
-
-
         stage('Tag Docker Image') {
             steps {
                 script {
@@ -58,7 +54,6 @@ pipeline {
             steps {
                 script {
                     bat "docker push ${DOCKER_IMAGE}:${env.BUILD_ID}"
-                    }
                 }
             }
         }
@@ -69,3 +64,4 @@ pipeline {
             }
         }
     }
+}
