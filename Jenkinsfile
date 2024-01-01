@@ -44,7 +44,7 @@ pipeline {
         stage('Tag Docker Image') {
             steps {
                 script {
-                    bat 'docker tag dshwartzman5/go-jenkins-dockerhub-repo:latest'
+                    bat 'docker tag dshwartzman5/go-jenkins-dockerhub-repo:latest dshwartzman5/go-jenkins-dockerhub-repo:latest'
                 }
             }
         }
