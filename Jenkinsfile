@@ -6,12 +6,11 @@ pipeline {
  }
  stages {
     stage('Pull Docker Image') {
-      steps {
-          sh '''
-              echo $DOCKERHUB_CREDENTIALS | docker login --username dshwartzman5 --password-stdin
-              docker pull ${DOCKER_IMAGE}
-          '''
-      }
+    steps {
+        sh '''
+            "C:\\Program Files\\Git\\bin\\bash.exe" -c "echo \\$DOCKER_TOKEN | docker login --username \\$DOCKER_USERNAME --password-stdin && docker pull ${DOCKER_IMAGE}"
+        '''
+    }
     }
 
     stage('Run Tests') {
