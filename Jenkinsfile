@@ -21,22 +21,19 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    // Use the Docker image for testing
-                    def dockerImage = "${DOCKER_IMAGE}"
-
-                    // Run tests within the Docker container
-                    docker.image(dockerImage).inside {
-                        // Tests are already executed in the container
-                    }
-
-                    // Read the test results file and check if the tests passed
-                    def testResults = readFile('/app/test_results.txt')
-                    if (testResults =~ /FAIL/) {
-                        error('Tests failed')
+                    def dockerArgs = '-p 8081:8081 -v C:/Users/Daniel Schwartzman/Desktop/דני/לימודים/Projects/GoApp:/app'
+                    docker.image("${DOCKER_IMAGE}").withRun(dockerArgs) {
+                        // Read the test_results.txt file
+                        def testResults = readFile('/app/test_results.txt')
+                        // Check if the tests passed
+                        if (testResults =~ /FAIL/) {
+                            error('Tests failed')
+                        }
                     }
                 }
             }
         }
+
 
         stage('Tag Docker Image') {
             steps {
