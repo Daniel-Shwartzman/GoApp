@@ -22,7 +22,7 @@ pipeline {
             steps {
                 script {
                     // Run the container with the tests
-                    bat 'docker run -p 8081:8081 -name test-container ${DOCKER_IMAGE}'
+                    bat 'docker run -p 8081:8081 --name test-container ${DOCKER_IMAGE}'
                     // Get the test results
                     bat 'docker exex -it test-container bash'
                     sh 'cat test-results.txt'
