@@ -9,7 +9,7 @@ pipeline {
         githubPush()
     }
     stages {
-        stage('Pull and Build Docker Image') {
+        stage('Build Docker Image') {
             steps {
                 script {
                     echo "Logging into Docker Hub"
