@@ -63,9 +63,11 @@ pipeline {
     post {
     always {
     withCredentials([string(credentialsId: 'discord-credential', variable: 'WEBHOOK_URL')]) {
-        def buildStatus = currentBuild.currentResult
-        def buildStatusMessage = buildStatus == 'SUCCESS' ? 'Build Succeeded' : 'Build Failed'
-        discordSend description: buildStatusMessage, footer: "Footer Text", link: env.BUILD_URL, result: buildStatus, title: JOB_NAME, webhookURL: WEBHOOK_URL
+        script {
+            def buildStatus = currentBuild.currentResult
+            def buildStatusMessage = buildStatus == 'SUCCESS' ? 'Build Succeeded' : 'Build Failed'
+            discordSend description: buildStatusMessage, footer: "Footer Text", link: env.BUILD_URL, result: buildStatus, title: JOB_NAME, webhookURL: WEBHOOK_URL
+        }
     }
     }
     }
