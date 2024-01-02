@@ -42,24 +42,29 @@ pipeline {
         success {
             script {
                 emailext subject: 'Pipeline Successful',
-                          body: 'The Jenkins pipeline has completed successfully. The Docker image has been built, tests passed, and the image has been pushed to the registry.',
+                          body: 'The Jenkins pipeline has completed successfully.',
                           recipientProviders: [culprits(), developers()],
-                          to: 'your-email@example.com'
+                          to: 'dshwartzman5@gmail.com'
             }
         }
+    }
+
+    post {
         failure {
             script {
                 emailext subject: 'Pipeline Failed',
                           body: 'The Jenkins pipeline has failed. Please review the build logs for details.',
                           recipientProviders: [culprits(), developers()],
-                          to: 'your-email@example.com'
+                          to: 'dshwartzman5@gmail.com'
             }
         }
     }
 
     post {
         always {
-            cleanWs()
+            script {
+                cleanWs()
+            }
         }
     }
 }
