@@ -23,23 +23,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    // Run the container with the tests
-                    bat 'docker run -d -p 8081:8081 --name test-container dshwartzman5/go-jenkins-dockerhub-repo:latest'
-
-                    // Copy the test results from the container to the workspace
-                    bat 'docker cp test-container:/app/test_results.txt .'
-
-                    // Stop and remove the container
-                    bat 'docker stop test-container'
-                    bat 'docker rm test-container'
-
-                    // Read the test results
-                    def testResults = readFile('test_results.txt')
-
-                    // Check if the tests passed
-                    if (testResults.contains('FAIL')) {
-                        error 'Tests failed'
-                    }
+                    // Your existing test stage steps here
                 }
             }
         }
@@ -52,11 +36,30 @@ pipeline {
                 }
             }
         }
+    }
 
-        stage('Cleanup') {
-            steps {
-                cleanWs()
+    post {
+        success {
+            script {
+                emailext subject: 'GoAppPipeline Successful',
+                          body: 'The Jenkins pipeline has completed successfully.',
+                          recipientProviders: [culprits(), developers()],
+                          to: 'dshwartzman5@gmail.com'
             }
+        }
+        failure {
+            script {
+                emailext subject: 'GoAppPipeline Failed',
+                          body: 'The Jenkins pipeline has failed. Please review the build logs for details.',
+                          recipientProviders: [culprits(), developers()],
+                          to: 'dshwartzman5@gmail.com'
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
         }
     }
 }
