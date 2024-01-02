@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 	"net/http/httptest"
-	"testing"
 	"strings"
+	"testing"
 )
 
 func TestHandleRequests(t *testing.T) {
@@ -29,7 +29,7 @@ func TestHandleRequests(t *testing.T) {
 	}
 
 	// Check the response Heading
-	expectedHeading := "<h1>Test</h1>"
+	expectedHeading := "<h1>Build With Go and Jenkins</h1>"
 	if !strings.Contains(rr.Body.String(), expectedHeading) {
 		t.Errorf("Handler returned body without expected heading: got %v want %v", rr.Body.String(), expectedHeading)
 	}
