@@ -3,12 +3,12 @@ package main
 import (
 	"html/template"
 	"net/http"
-	"io/ioutil"
+	"os"
 )
 
 func handleRequests(w http.ResponseWriter, r *http.Request) {
-	// Read the content of the HTML file
-	htmlContent, err := ioutil.ReadFile("index.html")
+	// Read the content of the HTML file using os.ReadFile
+	htmlContent, err := os.ReadFile("index.html")
 	if err != nil {
 		http.Error(w, "Error reading HTML file", http.StatusInternalServerError)
 		return
