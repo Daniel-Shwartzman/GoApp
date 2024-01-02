@@ -39,28 +39,28 @@ pipeline {
     }
 
     post {
-        success {
-            script {
-                emailext subject: 'Pipeline Successful',
-                          body: 'The Jenkins pipeline has completed successfully.',
-                          recipientProviders: [culprits(), developers()],
-                          to: 'dshwartzman5@gmail.com'
-            }
+    success {
+        script {
+            emailext subject: 'Pipeline Successful',
+                        body: 'The Jenkins pipeline has completed successfully.',
+                        recipientProviders: [culprits(), developers()],
+                        to: 'dshwartzman5@gmail.com'
         }
     }
 
-        failure {
-            script {
-                emailext subject: 'Pipeline Failed',
-                          body: 'The Jenkins pipeline has failed. Please review the build logs for details.',
-                          recipientProviders: [culprits(), developers()],
-                          to: 'dshwartzman5@gmail.com'
-            }
+    failure {
+        script {
+            emailext subject: 'Pipeline Failed',
+                        body: 'The Jenkins pipeline has failed. Please review the build logs for details.',
+                        recipientProviders: [culprits(), developers()],
+                        to: 'dshwartzman5@gmail.com'
         }
+    }
 
-        always {
-            script {
-                cleanWs()
-            }
+    always {
+        script {
+            cleanWs()
         }
+    }
 }
+
