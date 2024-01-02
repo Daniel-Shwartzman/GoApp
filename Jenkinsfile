@@ -49,7 +49,6 @@ pipeline {
         }
     }
 
-    post {
         failure {
             script {
                 emailext subject: 'Pipeline Failed',
@@ -58,13 +57,10 @@ pipeline {
                           to: 'dshwartzman5@gmail.com'
             }
         }
-    }
 
-    post {
         always {
             script {
                 cleanWs()
             }
         }
-    }
 }
