@@ -61,20 +61,11 @@ pipeline {
     }
 
     post {
-        always {
-            script {
-                if (currentBuild.result == 'SUCCESS') {
-                    emailext subject: 'GoAppPipeline Successful',
-                            body: 'The Jenkins pipeline has completed successfully.',
-                            recipientProviders: [culprits(), developers()],
-                            to: 'dshwartzman5@gmail.com'
-                } else {
-                    emailext subject: 'GoAppPipeline Failed',
-                            body: 'The Jenkins pipeline has failed. Please review the build logs for details.',
-                            recipientProviders: [culprits(), developers()],
-                            to: 'dshwartzman5@gmail.com'
-                }
-            }
-        }
+    always {
+    withCredentials([string(credentialsId: 'discord-credential', variable: 'WEBHOOK_URL')]) {
+        discordSend description: "Jenkins Pipeline Build", footer: "Footer Text", link: env.BUILD_URL, result: currentBuild.currentResult, title: JOB_NAME, webhookURL: WEBHOOK_URL
     }
+    }
+    }
+
 }
