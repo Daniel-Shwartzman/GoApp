@@ -61,24 +61,22 @@ pipeline {
     }
 
     post {
-    success {
-        script {
-            emailext subject: 'GoAppPipeline Successful',
-                        body: 'The Jenkins pipeline has completed successfully.',
-                        recipientProviders: [culprits(), developers()],
-                        to: 'dshwartzman5@gmail.com'
+        success {
+            script {
+                emailext subject: 'GoAppPipeline Successful',
+                            body: 'The Jenkins pipeline has completed successfully.',
+                            recipientProviders: [culprits(), developers()],
+                            to: 'dshwartzman5@gmail.com'
+                }
             }
         }
-    }
 
-    post {
         failure {
             script {
                 emailext subject: 'GoAppPipeline Failed',
-                          body: 'The Jenkins pipeline has failed. Please review the build logs for details.',
-                          recipientProviders: [culprits(), developers()],
-                          to: 'dshwartzman5@gmail.com'
+                            body: 'The Jenkins pipeline has failed. Please review the build logs for details.',
+                            recipientProviders: [culprits(), developers()],
+                            to: 'dshwartzman5@gmail.com'
             }
         }
-    }
 }
