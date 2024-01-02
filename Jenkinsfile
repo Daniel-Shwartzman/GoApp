@@ -41,18 +41,18 @@ pipeline {
     post {
         success {
             script {
-                emailext subject: 'GoAppPipeline Successful',
-                          body: 'The Jenkins pipeline has completed successfully.',
+                emailext subject: 'Pipeline Successful',
+                          body: 'The Jenkins pipeline has completed successfully. The Docker image has been built, tests passed, and the image has been pushed to the registry.',
                           recipientProviders: [culprits(), developers()],
-                          to: 'dshwartzman5@gmail.com'
+                          to: 'your-email@example.com'
             }
         }
         failure {
             script {
-                emailext subject: 'GoAppPipeline Failed',
+                emailext subject: 'Pipeline Failed',
                           body: 'The Jenkins pipeline has failed. Please review the build logs for details.',
                           recipientProviders: [culprits(), developers()],
-                          to: 'dshwartzman5@gmail.com'
+                          to: 'your-email@example.com'
             }
         }
     }
