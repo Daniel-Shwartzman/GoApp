@@ -9,7 +9,7 @@ pipeline {
     }
 
     triggers {
-        githubPush(branches: [[name: 'main']])
+        githubPush()
     }
 
 
