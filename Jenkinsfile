@@ -4,9 +4,11 @@ pipeline {
         DOCKERHUB_CREDENTIALS = 'docker-credentials'
         DOCKER_ACCESS_TOKEN = credentials('docker-credentials')
         DOCKER_USERNAME = 'dshwartzman5'
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
     }
     triggers {
-        githubPush()
+        githubPush(branch: 'main')
     }
     stages {
         stage('Build Docker Image') {
@@ -52,6 +54,35 @@ pipeline {
                 }
             }
         }
+
+        stage('Terraform Apply') {
+            steps {
+                script {
+                    dir('terraform') {
+                        bat 'terraform init'
+                        bat 'terraform apply -auto-approve'
+                    }
+                }
+            }
+        }
+
+        stage('Deploy Container') {
+            steps {
+                script {
+                    // SSH into the EC2 instance and deploy the Docker container
+                    withCredentials([string(credentialsId: 'ec2-ssh-key', variable: 'SSH_KEY')]) {
+                        dir('terraform') {
+                            // Read the instance public IP from Terraform output
+                            def instanceIP = bat(script: 'terraform output -raw instance_public_ip', returnStatus: true).trim()
+
+                            // Use the retrieved IP in the SSH command
+                            bat "ssh -o StrictHostKeyChecking=no -i $SSH_KEY ec2-user@${instanceIP} 'docker pull dshwartzman5/go-jenkins-dockerhub-repo:latest && docker run -d -p 8081:8081 dshwartzman5/go-jenkins-dockerhub-repo:latest'"
+                        }
+                    }
+                }
+            }
+        }
+
 
         stage('Cleanup') {
             steps {
