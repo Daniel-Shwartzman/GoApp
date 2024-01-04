@@ -1,8 +1,3 @@
-def hasTerraformChanges(terraformDir) {
-    def status = bat(script: "terraform -chdir=${terraformDir} status -no-color", returnStatus: true)
-    return status != 0
-}
-
 pipeline {
     agent any
 
