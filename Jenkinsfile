@@ -12,7 +12,6 @@ pipeline {
         githubPush(branches: [[name: 'main']])
     }
 
-    }
 
     stages {
         stage('Build Docker Image') {
@@ -106,3 +105,4 @@ pipeline {
             }
         }
     }
+}
