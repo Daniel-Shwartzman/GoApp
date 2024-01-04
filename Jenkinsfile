@@ -11,6 +11,7 @@ pipeline {
         DOCKER_USERNAME = 'dshwartzman5'
         AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
+        TERRAFORM_HOME = tool 'Terraform_31130_windows_amd64'
     }
 
     triggers {
@@ -62,7 +63,7 @@ pipeline {
                 }
             }
         }
-
+        
         stage('Terraform Apply (Conditional)') {
             when {
                 expression {
@@ -74,8 +75,13 @@ pipeline {
             steps {
                 script {
                     dir('Infra_GoApp/terraform') {
-                        bat 'terraform init'
-                        bat 'terraform apply -auto-approve'
+                        // Configure Terraform
+                        echo "Initializing Terraform"
+                        bat "${TERRAFORM_HOME}\\terraform init"
+
+                        // Apply Terraform changes
+                        echo "Applying Terraform changes"
+                        bat "${TERRAFORM_HOME}\\terraform apply -auto-approve"
                     }
                 }
             }
