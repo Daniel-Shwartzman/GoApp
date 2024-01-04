@@ -5,9 +5,6 @@ pipeline {
         DOCKERHUB_CREDENTIALS = 'docker-credentials'
         DOCKER_ACCESS_TOKEN = credentials('docker-credentials')
         DOCKER_USERNAME = 'dshwartzman5'
-        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
-        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
-        TERRAFORM_HOME = tool 'Terraform_31130_windows_amd64'
     }
 
     triggers {
