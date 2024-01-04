@@ -1,3 +1,8 @@
+def hasTerraformChanges(terraformDir) {
+    def status = bat(script: "terraform -chdir=${terraformDir} status -no-color", returnStatus: true)
+    return status != 0
+}
+
 pipeline {
     agent any
     environment {
@@ -58,10 +63,17 @@ pipeline {
             }
         }
 
-        stage('Terraform Apply') {
+        stage('Terraform Apply (Conditional)') {
+            when {
+                expression {
+                    // Run this stage if the initialization directory doesn't exist
+                    // OR if there are changes in the Terraform configuration
+                    !fileExists('Infra_GoApp/terraform/.terraform') || hasTerraformChanges('Infra_GoApp/terraform')
+                }
+            }
             steps {
                 script {
-                    dir('terraform') {
+                    dir('Infra_GoApp/terraform') {
                         bat 'terraform init'
                         bat 'terraform apply -auto-approve'
                     }
@@ -72,14 +84,19 @@ pipeline {
         stage('Deploy Container') {
             steps {
                 script {
-                    // SSH into the EC2 instance and deploy the Docker container
                     withCredentials([string(credentialsId: 'ec2-ssh-key', variable: 'SSH_KEY')]) {
-                        dir('terraform') {
+                        dir('Infra_GoApp/terraform') {
                             // Read the instance public IP from Terraform output
                             def instanceIP = bat(script: 'terraform output -raw instance_public_ip', returnStatus: true).trim()
 
-                            // Use the retrieved IP in the SSH command
-                            bat "ssh -o StrictHostKeyChecking=no -i $SSH_KEY ec2-user@${instanceIP} 'docker pull dshwartzman5/go-jenkins-dockerhub-repo:latest && docker run -d -p 8081:8081 dshwartzman5/go-jenkins-dockerhub-repo:latest'"
+                            // Generate a unique identifier (timestamp) for the container name
+                            def containerName = "GoApp"
+
+                            // Stop and remove any existing container with the same name
+                            bat "ssh -o StrictHostKeyChecking=no -i $SSH_KEY ec2-user@${instanceIP} 'docker stop ${containerName} || true && docker rm ${containerName} || true'"
+
+                            // Pull the latest Docker image and run the container
+                            bat "ssh -o StrictHostKeyChecking=no -i $SSH_KEY ec2-user@${instanceIP} 'docker pull dshwartzman5/go-jenkins-dockerhub-repo:latest && docker run -d -p 8081:8081 --name ${containerName} dshwartzman5/go-jenkins-dockerhub-repo:latest'"
                         }
                     }
                 }
