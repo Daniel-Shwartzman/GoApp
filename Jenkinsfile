@@ -78,7 +78,7 @@ pipeline {
             withCredentials([string(credentialsId: 'discord-credential', variable: 'WEBHOOK_URL')]) {
                 script {
                     def buildStatus = currentBuild.currentResult
-                    def buildStatusMessage = buildStatus == 'SUCCESS' ? 'Build Succeeded' : 'Build Failed'
+                    def buildStatusMessage = buildStatus == 'SUCCESS' ? 'CI Succeeded' : 'CI Failed'
                     discordSend description: buildStatusMessage, link: env.BUILD_URL, result: buildStatus, title: JOB_NAME, webhookURL: WEBHOOK_URL
 
                     build job: 'InfraGoAppPipeline', wait: false
