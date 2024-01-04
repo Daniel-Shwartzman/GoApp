@@ -7,8 +7,11 @@ pipeline {
         AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
     }
+    
     triggers {
-        githubPush(branch: 'main')
+        githubPush(branches: [[name: 'main']])
+    }
+
     }
     stages {
         stage('Build Docker Image') {
